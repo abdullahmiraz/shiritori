@@ -3,7 +3,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const UserInput = () => {
+interface IUserInput {
+  setPlayerSwap: any;
+  playerSwap?: any;
+}
+
+const UserInput = ({ setPlayerSwap, playerSwap }: IUserInput) => {
   const [wordName, setWordName] = useState<string>("");
   const [correctWord, setCorrectWord] = useState<boolean>(false);
   const [currentScore, setCurrentScore] = useState<number>(120);
@@ -11,6 +16,17 @@ const UserInput = () => {
   const [scoreList, setScoreList] = useState<any>([]);
   const [counter, setCounter] = React.useState(10);
   const [items, setItems] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
+
+  let emptyString = "";
+  let alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+  const handleOnFocus = () => {
+    while (emptyString.length < 1) {
+      emptyString += alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+    console.log(emptyString);
+  };
 
   React.useEffect(() => {
     const timer: any =
@@ -18,28 +34,13 @@ const UserInput = () => {
     return () => clearInterval(timer);
   }, [counter]);
 
-  //   useEffect(() => {
-  //     if (correctWord) {
-  //       if (items) {
-  //         const items = JSON.parse(localStorage.getItem("items") as any);
-  //         console.log("items", items);
-
-  //         localStorage.setItem("items", JSON.stringify(wordName));
-
-  //         setItems(items);
-  //       } else {
-  //         setItems([]);
-  //         localStorage.setItem("items", JSON.stringify(items) as any);
-  //       }
-  //     }
-  //   }, [correctWord]);
-
   const correctWordActions = () => {
     setCurrentScore(currentScore - counter - (wordName.length - 4));
     setCounter(0);
+    // setPlayerSwap(true);
     setCorrectWord(true);
 
-    const duplicate = wordList.find((word:string) => word === wordName);
+    const duplicate = wordList.find((word: string) => word === wordName);
     if (!duplicate) {
       setWordList([...wordList, wordName]);
     } else {
@@ -82,7 +83,11 @@ const UserInput = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div
+      className={`flex flex-col gap-4 ${
+        playerSwap === true ? "bg-red-800" : ""
+      }`}
+    >
       <div className="flex items-center justify-between ">
         <div>Score: {currentScore} </div>
         <div>Timer: {counter} </div>
@@ -95,6 +100,9 @@ const UserInput = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSubmit();
           }}
+          onFocus={handleOnFocus}
+          disabled={playerSwap}
+          placeholder={emptyString}
         />
       </div>
       <div>
