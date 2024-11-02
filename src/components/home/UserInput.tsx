@@ -39,10 +39,18 @@ const UserInput = () => {
     setCounter(0);
     setCorrectWord(true);
 
-    setWordList([...wordList, wordName]);
+    const duplicate = wordList.find((word:string) => word === wordName);
+    if (!duplicate) {
+      setWordList([...wordList, wordName]);
+    } else {
+      alert("duplicate word ");
+    }
     setScoreList([...scoreList, counter - (wordName.length - 4)]);
     // set to localstorage
+    setWordName("");
   };
+
+  //   wordList.find(wordName);
 
   console.log(wordList);
 
@@ -68,8 +76,6 @@ const UserInput = () => {
       }
     } catch (error) {
       console.log(error);
-    } finally {
-      setWordName("");
     }
 
     console.log(currentScore);
